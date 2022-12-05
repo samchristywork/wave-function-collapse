@@ -13,7 +13,7 @@ struct BitmapCollection {
 }
 
 impl BitmapCollection {
-    fn new() -> Self {
+    const fn new() -> Self {
         Self { data: Vec::new() }
     }
 }
@@ -41,12 +41,15 @@ impl Bitmap {
     }
 
     fn from_file(filename: &str) -> Self {
-        let raw_string: String = fs::read_to_string(filename).unwrap().parse().unwrap();
+        let raw_string: String = fs::read_to_string(filename)
+            .expect("Could not read file to string.")
+            .parse()
+            .expect("Could not parse string.");
 
         let inferred_width = raw_string
             .chars()
             .position(|e| e == '\n' || e == '\r')
-            .unwrap();
+            .expect("Bitmap image could not be inferred from input.");
 
         let inferred_height = raw_string
             .chars()
@@ -55,23 +58,23 @@ impl Bitmap {
             .len()
             / inferred_width;
 
-        Bitmap::from_str(raw_string.as_str(), inferred_width, inferred_height)
+        Self::from_str(raw_string.as_str(), inferred_width, inferred_height)
     }
 
-    fn slice(&self, x: usize, y: usize, width: usize, height: usize) -> Bitmap {
+    fn slice(&self, x: usize, y: usize, width: usize, height: usize) -> Self {
         let mut s = String::new();
         for y in y..y + height {
             for x in x..x + width {
                 s += self.data[x + y * self.width].to_string().as_str();
             }
         }
-        Bitmap::from_str(s.as_str(), width, height)
+        Self::from_str(s.as_str(), width, height)
     }
 
     fn slices(&self, width: usize, height: usize) -> BitmapCollection {
         let mut out = BitmapCollection::new();
-        for x in 0..self.width - width + 1 {
-            for y in 0..self.height - height + 1 {
+        for x in 0..=(self.width - width) {
+            for y in 0..=(self.height - height) {
                 out.data.push(self.slice(x, y, width, height));
             }
         }
@@ -84,7 +87,7 @@ impl fmt::Display for Bitmap {
         let mut out = String::new();
         out += "┌";
         for _ in 0..self.width {
-            out += "─"
+            out += "─";
         }
         out += "┐\n";
         for y in 0..self.height {
@@ -96,7 +99,7 @@ impl fmt::Display for Bitmap {
         }
         out += "└";
         for _ in 0..self.width {
-            out += "─"
+            out += "─";
         }
         out += "┘";
         write!(f, "{}", out)
@@ -136,7 +139,7 @@ pub fn foo() {
     let a = Bitmap::from_file("text/input2.txt");
     let b = a.slices(3, 3);
     let c = Grid::new(vec![0, 0, 0, 1], 2, 2);
-    println!("{}", format!("hi").yellow());
+    println!("{}", "hi".to_string().yellow());
     println!("{}", a);
     println!("{}", b);
     println!("{}", c);
