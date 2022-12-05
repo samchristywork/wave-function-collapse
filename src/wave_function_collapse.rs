@@ -81,7 +81,7 @@ impl Bitmap {
 
 impl fmt::Display for Bitmap {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut out = "".to_string();
+        let mut out = String::new();
         out += "┌";
         for _ in 0..self.width {
             out += "─"
@@ -101,4 +101,43 @@ impl fmt::Display for Bitmap {
         out += "┘";
         write!(f, "{}", out)
     }
+}
+
+struct Grid {
+    width: usize,
+    height: usize,
+    cells: Vec<usize>,
+}
+
+impl Grid {
+    fn new(cells: Vec<usize>, width: usize, height: usize) -> Self {
+        Self {
+            width,
+            height,
+            cells,
+        }
+    }
+}
+
+impl fmt::Display for Grid {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut out = String::new();
+        for y in 0..self.height {
+            for x in 0..self.width {
+                out += format!("{}", self.cells[x + y * self.width]).as_str();
+            }
+            out += "\n";
+        }
+        write!(f, "{}", out)
+    }
+}
+
+pub fn foo() {
+    let a = Bitmap::from_file("text/input2.txt");
+    let b = a.slices(3, 3);
+    let c = Grid::new(vec![0, 0, 0, 1], 2, 2);
+    println!("{}", format!("hi").yellow());
+    println!("{}", a);
+    println!("{}", b);
+    println!("{}", c);
 }
