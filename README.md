@@ -1,5 +1,14 @@
 ![Banner](https://s-christy.com/status-banner-service/deprecated/banner-slim.svg)
 
+## Deprecation Notice
+
+This repository is deprecated.
+
+This was initially an attempt to study the "wave function collapse" algorithm
+for procedural generation of images and geometries for levels in video games. I
+lost interest in this algorithm and moved on to other things, so I am abandoning
+it for now.
+
 ## Overview
 
 ## Features
